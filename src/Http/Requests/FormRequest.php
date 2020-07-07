@@ -162,6 +162,16 @@ class FormRequest extends Request implements ValidatesWhenResolved
     }
 
     /**
+     * Get rules for validator.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [];
+    }
+
+    /**
      * Get custom messages for validator errors.
      *
      * @return array
