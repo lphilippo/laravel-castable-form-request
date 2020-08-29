@@ -4,14 +4,13 @@ namespace LPhilippo\CastableFormRequest\Casting;
 
 trait CastsWhenValidatedTrait
 {
-
     /**
      * Holds all sanitised values.
-     * 
+     *
      * @var array
      */
-    protected array $sanitised = [];
-    
+    protected $sanitised = [];
+
     /**
      * The default storage format of the model's date columns.
      *
@@ -57,11 +56,8 @@ trait CastsWhenValidatedTrait
 
     /**
      * Handle custom casting on a request level, for example for nested values.
-     *
-     * @return void
      */
     protected function passedSanitisation()
     {
-        //
     }
 }
