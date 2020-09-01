@@ -3,9 +3,9 @@
 namespace LPhilippo\CastableFormRequest\Http\Requests;
 
 use LPhilippo\CastableFormRequest\Casting\CastsWhenValidatedTrait;
-use Illuminate\Foundation\Http\FormRequest as BaseFormRequest;
+use LPhilippo\CastableFormRequest\Http\Requests\Lumen\AbstractFormRequest;
 
-class FormRequest extends BaseFormRequest
+class LumenFormRequest extends AbstractFormRequest
 {
     use CastsWhenValidatedTrait;
 }

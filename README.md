@@ -1,4 +1,4 @@
-# Lumen/Laravel Castable FormRequest
+# 
 
 [![Test Suite Status](https://github.com/lphilippo/laravel-castable-form-request/workflows/Test%20Suite/badge.svg)](https://github.com/lphilippo/laravel-castable-form-request)
 [![Total Downloads](https://poser.pugx.org/lphilippo/laravel-castable-form-request/d/total.svg)](https://packagist.org/packages/lphilippo/laravel-castable-form-request)
@@ -29,13 +29,13 @@ $app->register(LPhilippo\CastableFormRequest\ServiceProvider::class);
 
 ## Usage in Lumen
 
-Simply extend your own form-request from `LPhilippo\CastableFormRequest\Http\Requests\FormRequest` and add the rules, casts and defaults that you need.
+Simply extend your own form-request from `LPhilippo\CastableFormRequest\Http\Requests\LumenFormRequest` and add the rules, casts and defaults that you need.
 
 ## Usage in Laravel
 
 As the `FormRequest` of this package should not be used over the standard one of Laravel (unless you have no need for the redirect actions), all functionality can still be achieved with a bit more code.
 
-Within your `FormRequest`, insert the trait `LPhilippo\CastableFormRequest\Casting\CastsWhenValidatedTrait`. This will allow the `casts()` to be applied, but in order to make use of the `defaults()` as well, please add the following code to your class:
+The `FormRequest` simply extends the base class and adds the `LPhilippo\CastableFormRequest\Casting\CastsWhenValidatedTrait`. This will allow the `casts()` to be applied, but in order to make use of the `defaults()` as well, please add the following code to your class:
 
 ```php
     /**
@@ -109,5 +109,24 @@ Or the fully sanitised data, which is prepared for further internal processing.
 $request->sanitised();
 ```
 
+## Adding custom validator rules
+
+In certain use cases, specifying all validation rules in the `$rules` variable is not enough. For example, if based on the request route, more tailored validation is needed, this can be achieved with adding something along the following structure:
+
+```php
+    /**
+     * @inheritdoc
+     */
+    public function withValidator($validator)
+    {
+        $entityId = $this->route('id');
+
+        if ($entityId === 1) {
+            $validator->addRules([
+                'key' => 'required|string|in:' . implode(',', self::RESTRICTED_KEYS),
+            ]);
+        }
+    }
+```
 
 

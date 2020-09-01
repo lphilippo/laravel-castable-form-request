@@ -4,7 +4,7 @@ namespace LPhilippo\CastableFormRequest;
 
 use Illuminate\Contracts\Validation\ValidatesWhenResolved;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use Lphilippo\CastableFormRequest\Http\Requests\FormRequest;
+use Lphilippo\CastableFormRequest\Http\Requests\LumenFormRequest;
 
 class ServiceProvider extends BaseServiceProvider
 {
@@ -17,8 +17,8 @@ class ServiceProvider extends BaseServiceProvider
             $resolved->validateResolved();
         });
 
-        $this->app->resolving(FormRequest::class, function ($request, $app) {
-            $request = FormRequest::createFrom($app['request'], $request);
+        $this->app->resolving(LumenFormRequest::class, function ($request, $app) {
+            $request = LumenFormRequest::createFrom($app['request'], $request);
 
             $request->setContainer($app);
         });
