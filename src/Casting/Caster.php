@@ -81,7 +81,9 @@ class Caster
             while ($lastDotOccurence = mb_strrpos($castKey, '.')) {
                 $castKey = mb_substr($castKey, 0, $lastDotOccurence);
                 if (!Arr::has($castKeys, $castKey)) {
-                    $casts[$castKey] = 'array';
+                    $casts = array_merge([
+                        $castKey => 'array',
+                    ], $casts);
                 }
             }
         }
