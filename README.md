@@ -109,6 +109,29 @@ Or the fully sanitised data, which is prepared for further internal processing.
 $request->sanitised();
 ```
 
+
+## Nested validation rules
+
+Similar to standard validation rules, also casting rules can be nested. For example, the following rules are valid. Please keep in mind that casting rules should always work alongside validation rules (which are applied first), as otherwise the outcome of the casts could be unexpected.
+
+```php
+  /**
+     * @inheritdoc
+     */
+    public function casts()
+    {
+        return [
+          'phone_country' => 'string',
+            // 'products' => 'array',
+            // 'products.*' => 'array',
+            'products.*.number_of_persons' => 'int',
+            // 'products.*.is_mandatory' => 'array',
+            'products.*.is_mandatory.*' => 'bool',
+            'products.*.product.id' => 'int',
+    }
+```
+
+
 ## Adding custom validator rules
 
 In certain use cases, specifying all validation rules in the `$rules` variable is not enough. For example, if based on the request route, more tailored validation is needed, this can be achieved with adding something along the following structure:
@@ -128,5 +151,6 @@ In certain use cases, specifying all validation rules in the `$rules` variable i
         }
     }
 ```
+
 
 

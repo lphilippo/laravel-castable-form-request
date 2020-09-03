@@ -16,7 +16,9 @@ class Caster
      */
     public function __construct(array $casts)
     {
-        $this->casts = $casts;
+        $this->casts = $this->normaliseCastings(
+            $casts
+        );
     }
 
     /**
@@ -39,10 +41,99 @@ class Caster
      */
     public function cast(array $data)
     {
-        foreach (Arr::only($data, array_keys($this->casts)) as $key => $value) {
-            $data[$key] = $this->castAttribute($key, $value);
+        foreach ($data as $key => $value) {
+            $castTo = Arr::get($this->casts, $key);
+
+            if ($castTo === null) {
+                if (Arr::first(array_keys($this->casts)) === '*') {
+                    $castTo = $this->casts['*'];
+                } else {
+                    continue;
+                }
+            }
+
+            if ($castTo === 'array') {
+                $data[$key] = $this->castArray(
+                    $key,
+                    Arr::wrap($value)
+                );
+            } else {
+                $data[$key] = $this->castAttribute($key, $value);
+            }
         }
 
         return $data;
+    }
+
+    /**
+     * Normalise the casts. Make sure that any child casting, has a parent with `array` casting.
+     *
+     * @param array $casts
+     *
+     * @return array
+     */
+    protected function normaliseCastings($casts)
+    {
+        $castKeys = array_keys($casts);
+
+        foreach ($castKeys as $castKey) {
+            while ($lastDotOccurence = mb_strrpos($castKey, '.')) {
+                $castKey = mb_substr($castKey, 0, $lastDotOccurence);
+                if (!Arr::has($castKeys, $castKey)) {
+                    $casts[$castKey] = 'array';
+                }
+            }
+        }
+
+        return $casts;
+    }
+
+    /**
+     * Cast the array, if casting rules are defined.
+     *
+     * @param string $index
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function castArray(string $index, array $data)
+    {
+        $casts = [];
+
+        // Look for all related casting keys for the array.
+        foreach ($this->casts as $key => $value) {
+            if (mb_strpos($key, $index . '.') !== false) {
+                $casts[mb_substr($key, mb_strlen($index . '.'))] = $value;
+            }
+        }
+
+        if (count($casts) === 0) {
+            return $data;
+        }
+
+        if (Arr::isAssoc($data)) {
+            return (new self($casts))->cast($data);
+        }
+
+        $castKeys = [];
+        $castData = [];
+
+        // We have to prepend textual keys, to keep allowing use of `hasAttributes`
+        foreach ($data as $key => $value) {
+            $paramKey = sprintf('param%d', $key);
+            $castData[$paramKey] = $value;
+
+            foreach ($casts as $castKey => $castValue) {
+                $castKeys[preg_replace('/\*/', $paramKey, $castKey, 1)] = $castValue;
+            }
+        }
+
+        return array_values(
+            (new self(
+                $castKeys
+            ))->cast(
+                $castData
+            )
+        );
     }
 }
