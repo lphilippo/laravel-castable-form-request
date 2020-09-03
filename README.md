@@ -5,7 +5,7 @@
 [![Latest Stable Version](https://poser.pugx.org/lphilippo/laravel-castable-form-request/v/stable.svg)](https://packagist.org/packages/lphilippo/laravel-castable-form-request)
 [![License](https://poser.pugx.org/lphilippo/laravel-castable-form-request/license.svg)](https://github.com/lphilippo/laravel-castable-form-request)
 
-First of all, you can now use Laravel-like form-requests within Lumen. Additionally you can extend your FormRequests with default values and casting, to have full control over the data that enters your application.
+First of all, you can now use Laravel-like form-requests within Lumen. Additionally you can extend your FormRequests with default values and (nested!) casting, to have full control over the data that enters your application. It's important to note that also for nested array, validation rules are required for each property, as otherwise the property will be omitted from the sanitised result.
 
 The `defaults()` are combined with the data source of the request prior to validation, whereas the `casts()` are being applied once validation is succesfull. By enforcing this order, the casts can be used to control in which type the data is provided to the application, regardless of the validation of the user data. This is especially usefull for working with `Carbon` dates internally.
 
@@ -109,25 +109,39 @@ Or the fully sanitised data, which is prepared for further internal processing.
 $request->sanitised();
 ```
 
+Both the `validated` as the `sanitised` methods do not include properties that are not validated. This also applies for nested arrays, which will be stripped from properties without validation.
 
 ## Nested validation rules
 
 Similar to standard validation rules, also casting rules can be nested. For example, the following rules are valid. Please keep in mind that casting rules should always work alongside validation rules (which are applied first), as otherwise the outcome of the casts could be unexpected.
 
 ```php
-  /**
+    /**
      * @inheritdoc
      */
     public function casts()
     {
         return [
-          'phone_country' => 'string',
-            // 'products' => 'array',
-            // 'products.*' => 'array',
-            'products.*.number_of_persons' => 'int',
-            // 'products.*.is_mandatory' => 'array',
-            'products.*.is_mandatory.*' => 'bool',
-            'products.*.product.id' => 'int',
+            'products' => 'array',
+            'products.*' => 'array',
+            'products.*.id' => 'int',
+            'products.*.category_id' => 'array',
+            'products.*.category_id.*' => 'int',
+    }
+```
+
+Although this can be written shorter by only defining the dot notation, as the array rules will be implied already:
+
+
+```php
+    /**
+     * @inheritdoc
+     */
+    public function casts()
+    {
+        return [
+            'products.*.id' => 'int',
+            'products.*.category_id.*' => 'int',
     }
 ```
 

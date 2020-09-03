@@ -7,9 +7,9 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Contracts\Validation\ValidatesWhenResolved;
 use Illuminate\Contracts\Validation\Validator;
-use Laravel\Lumen\Http\Request;
 use Illuminate\Validation\ValidatesWhenResolvedTrait;
 use Illuminate\Validation\ValidationException;
+use Laravel\Lumen\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class AbstractFormRequest extends Request implements ValidatesWhenResolved
@@ -155,6 +155,12 @@ abstract class AbstractFormRequest extends Request implements ValidatesWhenResol
      */
     public function validated()
     {
+        $rulesWithoutArray = array_filter($this->rules(), function ($rule) {
+            return array_search('array', explode('|', $rule)) === false;
+        });
+
+        $this->validator->setRules($rulesWithoutArray);
+
         return $this->validator->validated();
     }
 

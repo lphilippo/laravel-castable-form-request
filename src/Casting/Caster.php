@@ -4,6 +4,7 @@ namespace LPhilippo\CastableFormRequest\Casting;
 
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Caster
 {
@@ -124,7 +125,7 @@ class Caster
             $castData[$paramKey] = $value;
 
             foreach ($casts as $castKey => $castValue) {
-                $castKeys[preg_replace('/\*/', $paramKey, $castKey, 1)] = $castValue;
+                $castKeys[Str::replaceFirst('*', $paramKey, $castKey)] = $castValue;
             }
         }
 

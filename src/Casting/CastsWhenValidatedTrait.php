@@ -16,7 +16,7 @@ trait CastsWhenValidatedTrait
      *
      * @var string
      */
-    protected $dateFormat = 'y-m-d H:i:s';
+    protected $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * Default values that you want to set.
