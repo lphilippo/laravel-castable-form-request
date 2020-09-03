@@ -155,12 +155,6 @@ abstract class AbstractFormRequest extends Request implements ValidatesWhenResol
      */
     public function validated()
     {
-        $rulesWithoutArray = array_filter($this->rules(), function ($rule) {
-            return array_search('array', explode('|', $rule)) === false;
-        });
-
-        $this->validator->setRules($rulesWithoutArray);
-
         return $this->validator->validated();
     }
 

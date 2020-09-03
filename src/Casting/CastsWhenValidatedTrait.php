@@ -45,11 +45,20 @@ trait CastsWhenValidatedTrait
      */
     public function sanitised()
     {
+        $originalRules = $this->rules();
+        $rulesWithoutArray = array_filter($originalRules, function ($rule) {
+            return array_search('array', explode('|', $rule)) === false;
+        });
+
+        $this->validator->setRules($rulesWithoutArray);
+
         $this->sanitised = (new Caster($this->casts(), []))
             ->setDateFormat($this->dateFormat)
             ->cast($this->validated());
 
         $this->passedSanitisation();
+
+        $this->validator->setRules($originalRules);
 
         return $this->sanitised;
     }

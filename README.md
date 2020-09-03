@@ -109,7 +109,7 @@ Or the fully sanitised data, which is prepared for further internal processing.
 $request->sanitised();
 ```
 
-Both the `validated` as the `sanitised` methods do not include properties that are not validated. This also applies for nested arrays, which will be stripped from properties without validation.
+Please note that `sanitised` does not include properties that are not validated. This also applies for nested arrays, which will be stripped from properties without validation.
 
 ## Nested validation rules
 
