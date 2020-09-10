@@ -90,7 +90,7 @@ abstract class AbstractFormRequest extends Request implements ValidatesWhenResol
     public function prepareForValidation()
     {
         return $this->replace(
-            array_merge(
+            array_replace(
                 $this->defaults(),
                 $this->all()
             )
