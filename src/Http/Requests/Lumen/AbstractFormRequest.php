@@ -10,6 +10,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidatesWhenResolvedTrait;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Http\Request;
+use LPhilippo\CastableFormRequest\Provider\DefaultValueProvider;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class AbstractFormRequest extends Request implements ValidatesWhenResolved
@@ -90,9 +91,9 @@ abstract class AbstractFormRequest extends Request implements ValidatesWhenResol
     public function prepareForValidation()
     {
         return $this->replace(
-            array_merge(
+            DefaultValueProvider::apply(
+                $this->all(),
                 $this->defaults(),
-                $this->all()
             )
         );
     }
