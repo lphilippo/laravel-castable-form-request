@@ -146,6 +146,22 @@ Although this can be written shorter by only defining the dot notation, as the a
 ```
 
 
+## Nested default values
+
+The same nested approach can be applied to default values. However, it needs to be pointed out that nested array defaults are only applied when the resulting `validated` content, contains the array in the first place. It will not initialize the array in question.
+```php
+    /**
+     * @inheritdoc
+     */
+    public function casts()
+    {
+        return [
+            'status' => 'pending',
+            'products.*.status' => 'available',
+            'provider.country.currency' => 'EUR',
+    }
+```
+
 ## Adding custom validator rules
 
 In certain use cases, specifying all validation rules in the `$rules` variable is not enough. For example, if based on the request route, more tailored validation is needed, this can be achieved with adding something along the following structure:
@@ -166,5 +182,10 @@ In certain use cases, specifying all validation rules in the `$rules` variable i
     }
 ```
 
+## Important limitations (by design)
 
+Because the primary purpose of this package is to validate any input that is entering the system, the validation rules are always leading. Unfortunately, when you specify any validation rule on an array (per standard Laravel behavior), the elements of the array are no longer filtered when calling `Validator::validated`.
 
+As this goes contrary our purpose, this functionality is disabled, which allows us to define each array element. The downside is that empty arrays that might exist in the original data, will *not* be present in the result of `sanitised`.
+
+Although possible, at this moment it's not considered in scope.
