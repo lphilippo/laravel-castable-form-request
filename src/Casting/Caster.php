@@ -23,6 +23,14 @@ class Caster
     }
 
     /**
+     * We need to define this, as the standard exceptions within `hasAttributes` requires it.
+     */
+    public function getModel()
+    {
+        return $this;
+    }
+
+    /**
      * This method is unnecessary for the implementation, but required through
      * the trait of Eloquent that we're applying.
      *
