@@ -49,6 +49,10 @@ trait CastsWhenValidatedTrait
 
         // Let's remove the array rules, since they disable strict limiting of keys.
         $rulesWithoutArray = array_filter($originalRules, function ($rule) {
+            if (is_array($rule)) {
+                return !in_array('array', $rule);
+            }
+
             return array_search('array', explode('|', $rule)) === false;
         });
 
