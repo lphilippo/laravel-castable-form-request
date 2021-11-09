@@ -45,26 +45,11 @@ trait CastsWhenValidatedTrait
      */
     public function sanitised()
     {
-        $originalRules = $this->rules();
-
-        // Let's remove the array rules, since they disable strict limiting of keys.
-        $rulesWithoutArray = array_filter($originalRules, function ($rule) {
-            if (is_array($rule)) {
-                return !in_array('array', $rule);
-            }
-
-            return array_search('array', explode('|', $rule)) === false;
-        });
-
-        $this->validator->setRules($rulesWithoutArray);
-
         $this->sanitised = (new Caster($this->casts(), []))
             ->setDateFormat($this->dateFormat)
             ->cast($this->validated());
 
         $this->passedSanitisation();
-
-        $this->validator->setRules($originalRules);
 
         return $this->sanitised;
     }
