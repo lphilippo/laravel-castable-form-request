@@ -56,6 +56,9 @@ class Caster
             if ($castTo === null) {
                 if (Arr::first(array_keys($this->casts)) === '*') {
                     $castTo = $this->casts['*'];
+
+                    // Add additional cast key to satisfy the underlying casts detecting.
+                    $this->casts[$key] = $castTo;
                 } else {
                     continue;
                 }

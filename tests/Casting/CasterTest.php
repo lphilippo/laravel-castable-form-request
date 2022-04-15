@@ -44,4 +44,21 @@ class CasterTest extends BaseTestCase
             'key' => 1,
         ]);
     }
+
+    public function testCastingAssocOnly()
+    {
+        $caster = new Caster([
+            'array.*' => 'integer',
+        ]);
+
+        $this->assertSame($caster->cast([
+            'array' => [
+                'key' => '1',
+            ],
+        ]), [
+            'array' => [
+                'key' => 1,
+            ],
+        ]);
+    }
 }
