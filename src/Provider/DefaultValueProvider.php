@@ -4,6 +4,7 @@ namespace LPhilippo\CastableFormRequest\Provider;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LPhilippo\CastableFormRequest\Utils\ArrayUtils;
 
 class DefaultValueProvider
 {
@@ -19,24 +20,25 @@ class DefaultValueProvider
         array $data,
         array $defaults
     ) {
-        $dottedKeys = array_filter(
+        $recursiveKeys = array_filter(
             array_keys($defaults),
             function ($key) {
-                return Str::contains($key, '.');
+                return Str::contains($key, '*');
             }
         );
 
-        $data = array_replace(
-            Arr::except($defaults, $dottedKeys),
-            $data
-        );
+        $defaultData = [];
+        foreach (Arr::except($defaults, $recursiveKeys) as $key => $value) {
+            // Undot all default, excluding the recursive keys.
+            Arr::set($defaultData, $key, $value);
+        }
 
-        if (count($dottedKeys)) {
-            $data = self::addMissingKeys($data, $dottedKeys);
+        $data = ArrayUtils::deepMerge($defaultData, $data);
 
+        if (count($recursiveKeys)) {
             foreach ($data as $key => $value) {
                 if (is_array($value)) {
-                    $applicableNestedDefaults = self::getApplicableNestedDefaults($key, Arr::only($defaults, $dottedKeys));
+                    $applicableNestedDefaults = self::getApplicableNestedDefaults($key, Arr::only($defaults, $recursiveKeys));
 
                     if (count($applicableNestedDefaults)) {
                         $data[$key] = self::apply($value, $applicableNestedDefaults);
@@ -72,39 +74,5 @@ class DefaultValueProvider
         }
 
         return $applicableNestedDefaults;
-    }
-
-    /**
-     * Populate missing keys in the data array, based on dotted default keys.
-     *
-     * @param array $data
-     * @param array $keys
-     *
-     * @return array
-     */
-    protected static function addMissingKeys($data, $keys)
-    {
-        foreach ($keys as $key) {
-            $keyParts = explode('.', $key);
-            $firstKeyPart = Arr::first($keyParts);
-
-            if (!array_key_exists($firstKeyPart, $data)) {
-                if ($firstKeyPart === '*') {
-                    // Ignore. Wildcards do not force creation of keys.
-                } elseif (count($keyParts) === 2) {
-                    // There are no more nested levels.
-                    $data[$firstKeyPart] = [];
-                } else {
-                    $data[$firstKeyPart] = self::addMissingKeys(
-                        [],
-                        [
-                            implode('.', array_slice($keyParts, 1)),
-                        ]
-                    );
-                }
-            }
-        }
-
-        return $data;
     }
 }
