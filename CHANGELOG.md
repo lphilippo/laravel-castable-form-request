@@ -10,13 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 **Added**
 
-* Override `get` method for easier retrieval of raw values.
-
 **Changed**
 
 **Fixed**
-
-* Nested default values where not being set if the original key was not already present.
 
 **Removed**
 
