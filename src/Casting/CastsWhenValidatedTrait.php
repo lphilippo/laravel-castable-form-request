@@ -2,6 +2,8 @@
 
 namespace LPhilippo\CastableFormRequest\Casting;
 
+use Illuminate\Support\Arr;
+
 trait CastsWhenValidatedTrait
 {
     /**
@@ -19,6 +21,16 @@ trait CastsWhenValidatedTrait
     protected $dateFormat = 'Y-m-d H:i:s';
 
     /**
+     * Casting rules that you want to apply.
+     *
+     * @return array
+     */
+    public function casts()
+    {
+        return [];
+    }
+
+    /**
      * Default values that you want to set.
      *
      * @return array
@@ -29,13 +41,15 @@ trait CastsWhenValidatedTrait
     }
 
     /**
-     * Casting rules that you want to apply.
+     * Override default get to include `default` value, to retrieve the
+     * unvalidated and uncasted value (or default value).
      *
-     * @return array
+     * @param string $key
+     * @param mixed|null $default
      */
-    public function casts()
+    public function get(string $key, $default = null)
     {
-        return [];
+        return parent::get($key, $this->defaultValue($key, $default));
     }
 
     /**
@@ -52,6 +66,17 @@ trait CastsWhenValidatedTrait
         $this->passedSanitisation();
 
         return $this->sanitised;
+    }
+
+    /**
+     * Returns a specific default value, if defined.
+     *
+     * @param string $key
+     * @param mixed|null $default
+     */
+    protected function defaultValue(string $key, $default = null)
+    {
+        return Arr::get($this->defaults(), $key, $default);
     }
 
     /**

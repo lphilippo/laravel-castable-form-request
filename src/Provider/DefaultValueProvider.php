@@ -4,6 +4,7 @@ namespace LPhilippo\CastableFormRequest\Provider;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use LPhilippo\CastableFormRequest\Utils\ArrayUtils;
 
 class DefaultValueProvider
 {
@@ -19,22 +20,25 @@ class DefaultValueProvider
         array $data,
         array $defaults
     ) {
-        $dottedKeys = array_filter(
+        $recursiveKeys = array_filter(
             array_keys($defaults),
             function ($key) {
-                return Str::contains($key, '.');
+                return Str::contains($key, '*');
             }
         );
 
-        $data = array_replace(
-            Arr::except($defaults, $dottedKeys),
-            $data
-        );
+        $defaultData = [];
+        foreach (Arr::except($defaults, $recursiveKeys) as $key => $value) {
+            // Undot all default, excluding the recursive keys.
+            Arr::set($defaultData, $key, $value);
+        }
 
-        if (count($dottedKeys)) {
+        $data = ArrayUtils::deepMerge($defaultData, $data);
+
+        if (count($recursiveKeys)) {
             foreach ($data as $key => $value) {
                 if (is_array($value)) {
-                    $applicableNestedDefaults = self::getApplicableNestedDefaults($key, Arr::only($defaults, $dottedKeys));
+                    $applicableNestedDefaults = self::getApplicableNestedDefaults($key, Arr::only($defaults, $recursiveKeys));
 
                     if (count($applicableNestedDefaults)) {
                         $data[$key] = self::apply($value, $applicableNestedDefaults);
