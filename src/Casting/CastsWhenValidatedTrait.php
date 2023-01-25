@@ -46,8 +46,10 @@ trait CastsWhenValidatedTrait
      *
      * @param string $key
      * @param mixed|null $default
+     *
+     * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return parent::get($key, $this->defaultValue($key, $default));
     }
@@ -73,8 +75,10 @@ trait CastsWhenValidatedTrait
      *
      * @param string $key
      * @param mixed|null $default
+     *
+     * @return mixed
      */
-    protected function defaultValue(string $key, $default = null)
+    protected function defaultValue(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->defaults(), $key, $default);
     }

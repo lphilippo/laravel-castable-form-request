@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
-## [1.1.0] - 2023-01-25
+## [0.4.0] - 2023-01-25
 
 **Added**
 
@@ -27,6 +27,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 * Nested default values where not being set if the original key was not already present.
 
+
+## [0.3.0] - 2022-12-20
+
+**Added**
+
+* Changes for laravel 9.
 
 
 ## [0.2.1] - 2022-04-07
