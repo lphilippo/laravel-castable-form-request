@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [0.2.2] - 2023-01-25
+
+**Fixed**
+
+* Override `get` method for easier retrieval of raw values.
+
+
 ## [0.2.1] - 2022-04-07
 
 **Fixed**
