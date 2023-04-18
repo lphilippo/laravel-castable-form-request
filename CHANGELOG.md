@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [0.3.2] - 2023-04-18
+
+**Changed**
+
+* Dependencies are more flexible to allow installs on current and previous lumen/laravel versions.
+
+
 ## [0.3.1] - 2023-01-25
 
 **Added**
