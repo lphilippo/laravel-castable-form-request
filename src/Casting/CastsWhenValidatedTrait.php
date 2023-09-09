@@ -57,9 +57,11 @@ trait CastsWhenValidatedTrait
     /**
      * Get the validated and casted data from the request.
      *
+     * @param string|null $key
+     * @param mixed|null $default
      * @return array
      */
-    public function sanitised()
+    public function sanitised($key = null, $default = null)
     {
         $this->sanitised = (new Caster($this->casts(), []))
             ->setDateFormat($this->dateFormat)
@@ -67,7 +69,7 @@ trait CastsWhenValidatedTrait
 
         $this->passedSanitisation();
 
-        return $this->sanitised;
+        return data_get($this->sanitised, $key, $default);
     }
 
     /**
