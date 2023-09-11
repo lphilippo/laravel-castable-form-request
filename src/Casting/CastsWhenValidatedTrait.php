@@ -61,7 +61,7 @@ trait CastsWhenValidatedTrait
      * @param mixed|null $default
      * @return array
      */
-    public function sanitised($key = null, $default = null)
+    public function sanitised(string $key = null, mixed $default = null)
     {
         $this->sanitised = (new Caster($this->casts(), []))
             ->setDateFormat($this->dateFormat)
