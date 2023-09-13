@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 **Removed**
 
 
+## [0.3.3] - 2023-09-13
+
+**Changed**
+
+* `sanitised` can now be called with similar arguments as `validated`, thanks to @misakstvanu.
+
+
 ## [0.3.2] - 2023-04-18
 
 **Changed**

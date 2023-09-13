@@ -58,7 +58,8 @@ trait CastsWhenValidatedTrait
      * Get the validated and casted data from the request.
      *
      * @param array|int|string|null $key
-     * @param mixed $default
+     * @param mixed|null $default
+     *
      * @return mixed
      */
     public function sanitised(array|int|string|null $key = null, mixed $default = null): mixed
