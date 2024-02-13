@@ -11,7 +11,7 @@ trait CastsWhenValidatedTrait
      *
      * @var array
      */
-    protected $sanitised = [];
+    protected $sanitised = null;
 
     /**
      * The default storage format of the model's date columns.
@@ -64,11 +64,13 @@ trait CastsWhenValidatedTrait
      */
     public function sanitised(array|int|string|null $key = null, mixed $default = null): mixed
     {
-        $this->sanitised = (new Caster($this->casts(), []))
-            ->setDateFormat($this->dateFormat)
-            ->cast($this->validated());
+        if(is_null($this->sanitised)) {
+            $this->sanitised = (new Caster($this->casts(), []))
+                ->setDateFormat($this->dateFormat)
+                ->cast($this->validated());
 
-        $this->passedSanitisation();
+            $this->passedSanitisation();
+        }
 
         return data_get($this->sanitised, $key, $default);
     }
